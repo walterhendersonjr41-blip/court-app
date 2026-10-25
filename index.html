@@ -1,25 +1,37 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Court — AI judge for everyday disputes</title>
-<style>body{margin:0;font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0f1d3a;color:#eef1f4}
-main{max-width:980px;margin:auto;padding:28px 18px 60px}h1{font-size:2rem;margin:.2em 0}.tag{color:#c9a24a;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;font-weight:700}
-.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:18px 20px;margin:18px 0}
-.note{border-color:#c9a24a}pre{background:#000a;padding:12px;border-radius:8px;overflow:auto}code{color:#c9a24a}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}figure{margin:0}figure img{width:100%;border-radius:10px;border:1px solid rgba(255,255,255,.15)}
-figcaption{font-size:.85rem;opacity:.8;margin-top:6px}a{color:#c9a24a}footer{opacity:.6;font-size:.85rem;margin-top:30px}</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1e3a8a"><link rel="apple-touch-icon" href="icons/icon-192.png"><link rel="icon" href="icons/icon-192.png">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1d3a">
+<title>Court: Settle It Fairly</title>
+<meta name="description" content="A free, neutral AI judge for everyday disagreements. Both sides file, the judge cross-examines, then writes a formal judgment. Not a real court, not legal advice.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="style.css">
 </head>
-<body><main><div class="tag">Project overview</div><h1>Court — AI judge for everyday disputes</h1><p>A neutral online forum for small disagreements. The Plaintiff opens a case and summons the Defendant by link. Each side files privately with numbered exhibits, the judge cross-examines both, then enters a formal written judgment. One appeal is allowed, and both parties can opt in to an anonymised public jury.</p>
-<div class="card note"><b>About this page.</b> This app needs its Node.js server (database, AI vision/judge, payments), so it can't run on GitHub Pages. This page explains it with screenshots taken from a local test run using demo data. The full source is in this repository; see <a href="README.md">README.md</a>.</div>
-<div class="card"><h2>What it does</h2><ul><li>Case numbers, numbered exhibits (P-1, D-1…), 1–3 required cross-examination questions per side</li><li>Formal judgment: findings of fact with exhibit citations, conclusions, verdict and order; read-only share link</li><li>One appeal, with reply or waiver, decided by an Appellate Division</li><li>Optional public jury: anonymised record, one vote per browser, shown beside the verdict on the Public Docket</li><li>AI judge via the xAI API (Grok) when a key is set; otherwise a clearly labelled DEMO judge (not AI)</li><li>Paywall hook built in but switched off</li></ul></div>
-<h2>Screenshots</h2><div class="grid"><figure><img src="screenshots/01-home.jpg" alt="Home" loading="lazy"><figcaption>Home</figcaption></figure>
-<figure><img src="screenshots/05-cross-examination.jpg" alt="Cross-examination" loading="lazy"><figcaption>Cross-examination</figcaption></figure>
-<figure><img src="screenshots/06-judgment.jpg" alt="Judgment (demo judge)" loading="lazy"><figcaption>Judgment (demo judge)</figcaption></figure>
-<figure><img src="screenshots/09-jury-vs-judge.jpg" alt="Jury vs judge" loading="lazy"><figcaption>Jury vs judge</figcaption></figure>
-<figure><img src="screenshots/10-public-docket.jpg" alt="Public docket" loading="lazy"><figcaption>Public docket</figcaption></figure>
-</div>
-<div class="card"><h2>How it's built</h2><p>Node.js + Express, SQLite (better-sqlite3), multer for evidence images, vanilla JS front end in <code>public/</code>.</p><h3>Run it locally</h3><pre>npm install
-PORT=3300 node server.js
-# optional: XAI_API_KEY=... for the AI judge</pre></div>
-<footer>Created by Walter Henderson Jr. Screenshots show demo/test data only.</footer></main><script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+<body>
+<div class="testbar" id="testbar" hidden>Test mode (?ns=test): cases here are kept separate from the real docket.</div>
+<header class="top">
+  <a href="#/" class="brand"><span class="seal">⚖</span><span>COURT</span></a><a href="#/docket" class="dk">Public Docket</a>
+</header>
+<main id="app"><div class="card center">Loading…</div></main>
+<footer class="foot">
+  Rulings are a neutral AI opinion to help resolve disagreements. They are <strong>not legally binding</strong>, this is not a real court, and it is <strong>not legal advice</strong>.
+  Need real help? <a href="https://www.lawhelp.org/" target="_blank" rel="noopener">LawHelp.org</a> · <a href="https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help" target="_blank" rel="noopener">Free legal aid</a> · call 211 · <a href="#/help">More</a>
+</footer>
 <script src="ai-helper.js"></script>
-<script>AIHelper.init({"referrer": "court-app", "title": "⚖️ Quick AI judge", "color": "#1e3a8a", "greeting": "Describe a small everyday dispute (both sides, the facts, any proof) and I'll give a neutral quick ruling with my reasons. This quick version runs right here for free; the full Court app with exhibits and appeals needs its server.", "system": "You are a neutral judge for small everyday disputes between friends, roommates, neighbours or small sellers. Ask for missing facts from BOTH sides if needed (at most 3 short questions). Then give: Findings of fact, Reasoning, Ruling, and a fair Order (what each side should do). Be even-handed and plain-spoken. This is not a court and not legal advice; for real legal claims suggest small-claims court or a lawyer.", "note": "Not legal advice. Not a real court.", "chips": [["Try a sample case", "Here's a dispute: my roommate moved out early and won't pay her half of the last month's $1,200 rent. We had no written lease between us, only texts saying 'we split everything 50/50 until August'. She left in June. Please rule."], ["What can you judge?", "What kinds of disputes can you rule on, and what should each side send you?"], ["Rule on my dispute", "I want a ruling on a dispute. Ask me for the facts from both sides."]]});</script>
-</body></html>
+<script>
+if (new URLSearchParams(location.search).get('ns') === 'test') document.getElementById('testbar').hidden = false;
+AIHelper.init({ referrer: 'court-app', title: '⚖️ Court helper', color: '#1e3a8a', bottom: 70,
+  greeting: 'Hi! I can explain how Court works, help you write a clear statement, or give a quick neutral opinion on a small dispute. I am not a lawyer and this is not legal advice.',
+  system: 'You are the helper inside "Court", a free app where two people settle an everyday disagreement: the Plaintiff opens a case and sends the Defendant a link, each side files a private statement and exhibits, a neutral AI judge cross-examines both and writes a formal judgment, one appeal is allowed, and both can opt in to an anonymous public jury. Help users write factual, calm statements, organise evidence, and understand judgments. You can give a quick neutral opinion on a dispute if asked. You are NOT a lawyer: always say this is not legal advice. When the matter involves real legal rights (eviction, debt collection, injury, family law, immigration, employment, police, large sums), urge them to get free help from LawHelp.org, a local legal aid office (lsc.gov), 211, or small-claims court. Never help anyone threaten, harass or deceive the other party.',
+  note: 'Not legal advice. Not a real court. Free legal aid: LawHelp.org or call 211.',
+  chips: [['How does this work?', 'How does Court work, step by step?'], ['Help me write my side', 'Help me write a clear, factual statement for my side of a dispute. Ask me questions first.'], ['Quick opinion', 'I want a quick neutral opinion on a small dispute. Ask me for the facts from both sides.'], ['Find free legal aid', 'Where can I get free real legal help near me?']] });
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

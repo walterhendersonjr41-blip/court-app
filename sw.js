@@ -1,7 +1,7 @@
-/* Offline-friendly service worker: network first, cached copy when offline. */
-const CACHE = 'app-v1';
+/* Offline shell only; case data always comes live from the network. */
+const CACHE = 'court-v2';
 self.addEventListener('install', e => self.skipWaiting());
-self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
   if (e.request.method !== 'GET' || u.origin !== location.origin) return;
